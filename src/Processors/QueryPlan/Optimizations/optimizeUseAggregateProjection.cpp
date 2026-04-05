@@ -627,7 +627,10 @@ std::optional<String> optimizeUseAggregateProjections(
 
                 auto projection_query_info = query_info;
                 projection_query_info.prewhere_info = nullptr;
-                projection_query_info.filter_actions_dag = std::make_unique<ActionsDAG>(candidate.dag.clone());
+                if (candidates.has_filter)
+                    projection_query_info.filter_actions_dag = std::make_unique<ActionsDAG>(candidate.dag.clone());
+                else
+                    projection_query_info.filter_actions_dag = nullptr;
 
                 bool analyzed = analyzeProjectionCandidate(
                     candidate,
